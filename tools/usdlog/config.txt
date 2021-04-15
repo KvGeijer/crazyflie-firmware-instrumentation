@@ -3,23 +3,6 @@
 log   # file name
 0     # enable on startup (0/1)
 on:fixedFrequency
-250     # frequency
-1     # mode (0: disabled, 1: synchronous stabilizer, 2: asynchronous)
-acc.x
-acc.y
-acc.z
-gyro.x
-gyro.y
-gyro.z
-baro.asl
-baro.temp
-baro.pressure
-stabilizer.roll
-stabilizer.pitch
-stabilizer.yaw
-stabilizer.thrust
-ctrltarget.roll
-ctrltarget.pitch
-ctrltarget.yaw
-range.zrange
-on:activeMarkerModeChanged
+1     # frequency
+0     # mode (0: disabled, 1: synchronous stabilizer, 2: asynchronous)
+on:myEvent	# Do just want to log the payload really

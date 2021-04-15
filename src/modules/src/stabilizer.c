@@ -55,6 +55,15 @@
 #include "static_mem.h"
 #include "rateSupervisor.h"
 
+// Imports and declares the myLoopEvent
+#include "eventtrigger.h"
+EVENTTRIGGER(myEvent, uint8, var1)
+
+// Want the parameter group usd to access usd.logging
+#include "usddeck.h"
+#include "param.h"
+#include "log.h"
+
 static bool isInit;
 static bool emergencyStop = false;
 static int emergencyStopTimeout = EMERGENCY_STOP_TIMEOUT_DISABLED;
@@ -238,6 +247,12 @@ static void stabilizerTask(void* param)
     // The sensor should unlock at 1kHz
     sensorsWaitDataReady();
 
+    // Sets the value of the var1 variable
+    eventTrigger_myEvent_payload.var1 = tick;
+
+    // Trigger the event
+    eventTrigger(&eventTrigger_myEvent);
+
     if (healthShallWeRunTest())
     {
       sensorsAcquire(&sensorData, tick);
@@ -285,6 +300,11 @@ static void stabilizerTask(void* param)
           && RATE_DO_EXECUTE(usddeckFrequency(), tick)) {
         usddeckTriggerLogging();
       }
+
+      if (tick > 100) {
+    	  //usd.logging = 0;
+      }
+
     }
     calcSensorToOutputLatency(&sensorData);
     tick++;
