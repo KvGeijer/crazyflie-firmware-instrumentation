@@ -18,8 +18,8 @@ logData = cfusdlog.decode(args.filename)
 if not os.path.isdir('decoded'):
 	os.mkdir('decoded')
 
-with open(os.path.join('decoded',name), 'w') as f:
-	print(logData)
+with open(os.path.join('decoded',name + '.json'), 'w') as f:
+	# print(logData)
 	json.dump(logData, f, indent=4)
 		
 
