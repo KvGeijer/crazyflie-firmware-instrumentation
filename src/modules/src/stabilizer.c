@@ -57,12 +57,7 @@
 
 // Imports and declares the myLoopEvent
 #include "eventtrigger.h"
-EVENTTRIGGER(myEvent, uint8, var1)
-
-// Want the parameter group usd to access usd.logging
-#include "usddeck.h"
-#include "param.h"
-#include "log.h"
+EVENTTRIGGER(myEvent, uint32, tick)
 
 static bool isInit;
 static bool emergencyStop = false;
@@ -247,8 +242,8 @@ static void stabilizerTask(void* param)
     // The sensor should unlock at 1kHz
     sensorsWaitDataReady();
 
-    // Sets the value of the var1 variable
-    eventTrigger_myEvent_payload.var1 = tick;
+    // Sets the value of the tick variable. Seems the loop is executed every software tick.
+    eventTrigger_myEvent_payload.tick = xTaskGetTickCount();
 
     // Trigger the event
     eventTrigger(&eventTrigger_myEvent);
@@ -299,10 +294,6 @@ static void stabilizerTask(void* param)
           && usddeckLoggingMode() == usddeckLoggingMode_SynchronousStabilizer
           && RATE_DO_EXECUTE(usddeckFrequency(), tick)) {
         usddeckTriggerLogging();
-      }
-
-      if (tick > 100) {
-    	  //usd.logging = 0;
       }
 
     }
