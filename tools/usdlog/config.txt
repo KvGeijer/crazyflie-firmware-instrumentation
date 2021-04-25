@@ -5,4 +5,5 @@ log   # file name
 on:fixedFrequency
 1     # frequency
 0     # mode (0: disabled, 1: synchronous stabilizer, 2: asynchronous)
-on:myEvent	# Do just want to log the payload really
+on:logBefore
+on:logAfter
