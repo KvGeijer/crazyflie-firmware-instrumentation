@@ -55,6 +55,10 @@
 #include "static_mem.h"
 #include "rateSupervisor.h"
 
+// Imports and declares the myLoopEvent
+#include "eventtrigger.h"
+EVENTTRIGGER(myEvent, uint32, tick)
+
 static bool isInit;
 static bool emergencyStop = false;
 static int emergencyStopTimeout = EMERGENCY_STOP_TIMEOUT_DISABLED;
@@ -238,6 +242,12 @@ static void stabilizerTask(void* param)
     // The sensor should unlock at 1kHz
     sensorsWaitDataReady();
 
+    // Sets the value of the tick variable. Seems the loop is executed every software tick.
+    eventTrigger_myEvent_payload.tick = xTaskGetTickCount();
+
+    // Trigger the event
+    eventTrigger(&eventTrigger_myEvent);
+
     if (healthShallWeRunTest())
     {
       sensorsAcquire(&sensorData, tick);
@@ -285,6 +295,7 @@ static void stabilizerTask(void* param)
           && RATE_DO_EXECUTE(usddeckFrequency(), tick)) {
         usddeckTriggerLogging();
       }
+
     }
     calcSensorToOutputLatency(&sensorData);
     tick++;
