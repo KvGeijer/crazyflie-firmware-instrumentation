@@ -57,7 +57,8 @@
 
 // Imports and declares the myLoopEvent
 #include "eventtrigger.h"
-EVENTTRIGGER(myEvent, uint32, tick)
+EVENTTRIGGER(logAfter, uint32, tick)
+EVENTTRIGGER(logBefore, uint32, tick)
 
 static bool isInit;
 static bool emergencyStop = false;
@@ -239,14 +240,17 @@ static void stabilizerTask(void* param)
   DEBUG_PRINT("Ready to fly.\n");
 
   while(1) {
+	eventTrigger_logBefore_payload.tick = xTaskGetTickCount();
+	eventTrigger(&eventTrigger_logBefore);
+
     // The sensor should unlock at 1kHz
     sensorsWaitDataReady();
 
     // Sets the value of the tick variable. Seems the loop is executed every software tick.
-    eventTrigger_myEvent_payload.tick = xTaskGetTickCount();
+    eventTrigger_logAfter_payload.tick = xTaskGetTickCount();
 
     // Trigger the event
-    eventTrigger(&eventTrigger_myEvent);
+    eventTrigger(&eventTrigger_logAfter);
 
     if (healthShallWeRunTest())
     {
