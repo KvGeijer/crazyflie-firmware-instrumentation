@@ -176,7 +176,7 @@ Output: double res: Normalised Psuedo Random Number in range 0<X<1
 #define a (22695477) //Multiplier
 #define c (1) //Increment
 #define X0 (8) //Seed. Important. Only valid for X0 < m
-#define threshHold (0.9)
+#define threshHold (0.1)
 
 #if defined X0
 #define skipIter (1)
@@ -275,12 +275,12 @@ static void stabilizerTask(void* param)
   double rngNum;
   while(1) {
 
+
     if(skipIter) //Constant branch. Hopefully optimized away by compiler
     {
       rngNum = lcg();
       if(rngNum > threshHold) {continue;}
     }
-    
 
     // The sensor should unlock at 1kHz
     sensorsWaitDataReady();
