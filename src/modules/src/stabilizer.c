@@ -57,8 +57,9 @@
 
 // Imports and declares the myLoopEvent
 #include "eventtrigger.h"
-EVENTTRIGGER(logAfter, uint32, tick)
-EVENTTRIGGER(logBefore, uint32, tick)
+EVENTTRIGGER(logAfter, uint8, tick)
+EVENTTRIGGER(logBefore, uint8, tick)
+EVENTTRIGGER(logSkipped, float, rngNum)
 
 static bool isInit;
 static bool emergencyStop = false;
@@ -169,6 +170,41 @@ static void compressSetpoint()
   setpointCompressed.az = setpoint.acceleration.z * 1000.0f;
 }
 
+/* Returns a Psudeo random generated number using
+an implemented Linear Congruential Generator. Parameters a,c and m are chosen
+according to Borland Software Coorporations model.
+Output: double res: Normalised Psuedo Random Number in range 0<X<1
+*/
+
+#define e (32) //Exponent
+#define a (22695477) //Multiplier
+#define c (1) //Increment
+#define X0 (8) //Seed. Important. Only valid for X0 < m
+#define threshHold (0.9)
+
+#if defined X0
+#define skipIter (0)
+#else
+#define skipIter (0)
+#endif
+
+// Varför ha X som global? Räcker det ej att ha den i funktionen?
+static long X;
+
+static double lcg()
+{
+
+	long long m; // Modulo
+	double res; //Result to print
+
+	m = pow(2,e); //Calculate modulo
+
+	X = (a*X + c)%(m); //Generate new nbr
+	res = (double)X/(m-1); //Normalise
+
+	return res;
+}
+
 void stabilizerInit(StateEstimatorType estimator)
 {
   if(isInit)
@@ -239,15 +275,40 @@ static void stabilizerTask(void* param)
 
   DEBUG_PRINT("Ready to fly.\n");
 
+  // Introduce seed X0 for Psuedo Random Number Generators
+  X=X0;
+  double rngNum;
+  int skipNext = 0;
+
   while(1) {
 
+	eventTrigger_logBefore_payload.tick = tick;
 	eventTrigger(&eventTrigger_logBefore);
+
+	if(skipIter)
+	{
+		// Pre calculate to save computation time
+		rngNum = lcg();
+		skipNext = rngNum > threshHold;
+	}
 
     // The sensor should unlock at 1kHz
     sensorsWaitDataReady();
 
+    if(skipIter) //Constant branch. Hopefully optimized away by compiler
+    {
+      if(skipNext) {
+    	  tick++;
+    	  eventTrigger_logSkipped_payload.rngNum = rngNum;
+    	  eventTrigger(&eventTrigger_logSkipped);
+    	  continue;
+      }
+    }
+
     // Trigger the event
+    eventTrigger_logAfter_payload.tick = tick;
     eventTrigger(&eventTrigger_logAfter);
+
 
     if (healthShallWeRunTest())
     {
