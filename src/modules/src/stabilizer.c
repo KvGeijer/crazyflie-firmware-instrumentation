@@ -240,14 +240,11 @@ static void stabilizerTask(void* param)
   DEBUG_PRINT("Ready to fly.\n");
 
   while(1) {
-	eventTrigger_logBefore_payload.tick = xTaskGetTickCount();
+
 	eventTrigger(&eventTrigger_logBefore);
 
     // The sensor should unlock at 1kHz
     sensorsWaitDataReady();
-
-    // Sets the value of the tick variable. Seems the loop is executed every software tick.
-    eventTrigger_logAfter_payload.tick = xTaskGetTickCount();
 
     // Trigger the event
     eventTrigger(&eventTrigger_logAfter);
