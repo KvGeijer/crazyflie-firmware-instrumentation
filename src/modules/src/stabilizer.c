@@ -58,7 +58,7 @@
 // Imports and declares the myLoopEvent
 #include "eventtrigger.h"
 EVENTTRIGGER(logAfter, uint8, tick)
-EVENTTRIGGER(logBefore, uint8, tick)
+EVENTTRIGGER(logBefore, float, rngNum)
 EVENTTRIGGER(logSkipped, float, rngNum)
 
 static bool isInit;
@@ -180,10 +180,10 @@ Output: double res: Normalised Psuedo Random Number in range 0<X<1
 #define a (22695477) //Multiplier
 #define c (1) //Increment
 #define X0 (8) //Seed. Important. Only valid for X0 < m
-#define threshHold (0.9)
+#define threshHold (0.4)
 
 #if defined X0
-#define skipIter (0)
+#define skipIter (1)
 #else
 #define skipIter (0)
 #endif
@@ -282,15 +282,15 @@ static void stabilizerTask(void* param)
 
   while(1) {
 
-	eventTrigger_logBefore_payload.tick = tick;
-	eventTrigger(&eventTrigger_logBefore);
-
 	if(skipIter)
 	{
 		// Pre calculate to save computation time
 		rngNum = lcg();
 		skipNext = rngNum > threshHold;
 	}
+
+	eventTrigger_logBefore_payload.rngNum = rngNum;
+	eventTrigger(&eventTrigger_logBefore);
 
     // The sensor should unlock at 1kHz
     sensorsWaitDataReady();
