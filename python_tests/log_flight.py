@@ -178,10 +178,13 @@ if __name__ == '__main__':
         cf.param.set_value('usd.logging', 1)
         time.sleep(5)
 
-        #fly_eight(cf)
-        fly_square(cf)
-        #fly_straight(cf)
-        #fly_hover(cf)
+        fly_hover(cf)
+        #fly_square(cf)
+
+
+
+		# fly_straight(cf)
+		# fly_eight(cf)
 
         time.sleep(5)
         cf.param.set_value('usd.logging', 0)
