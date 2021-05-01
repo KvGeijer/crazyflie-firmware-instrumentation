@@ -180,10 +180,10 @@ Output: double res: Normalised Psuedo Random Number in range 0<X<1
 #define a (22695477) //Multiplier
 #define c (1) //Increment
 #define X0 (8) //Seed. Important. Only valid for X0 < m
-#define threshHold (0.4)
+#define threshHold (1)
 
 #if defined X0
-#define skipIter (1)
+#define skipIter (0)
 #else
 #define skipIter (0)
 #endif
@@ -277,7 +277,7 @@ static void stabilizerTask(void* param)
 
   // Introduce seed X0 for Psuedo Random Number Generators
   X=X0;
-  double rngNum;
+  double rngNum = 0;
   int skipNext = 0;
 
   while(1) {
