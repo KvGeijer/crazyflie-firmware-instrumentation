@@ -176,6 +176,7 @@ if __name__ == '__main__':
 
         time.sleep(5)
         cf.param.set_value('usd.logging', 1)
+        cf.param.set_value('stabilizer.controller', 1)
         time.sleep(5)
 
         fly_hover(cf)
