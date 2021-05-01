@@ -65,11 +65,12 @@ def fly_straight(cf):
 
 	#Quickly go back and forth
 	for _ in range(4):
-
-			cf.commander.send_hover_setpoint(0.6, 0, 0, 0.4)
-			time.sleep(0.05)
-			cf.commander.send_hover_setpoint(-0.6, 0, 0, 0.4)
-			time.sleep(0.05)
+			for _ in range(10):
+				cf.commander.send_hover_setpoint(0.6, 0, 0, 0.4)
+				time.sleep(0.05)
+			for _ in range(10):	
+				cf.commander.send_hover_setpoint(-0.6, 0, 0, 0.4)
+				time.sleep(0.05)
 
 
 
@@ -105,16 +106,20 @@ def fly_square(cf):
 
 
 	#Quickly go in square
-	for _ in range(2):
+	for _ in range(4):
 
-			cf.commander.send_hover_setpoint(0.6, 0, 0, 0.4)
-			time.sleep(0.05)
-			cf.commander.send_hover_setpoint(0, 0.6, 0, 0.4)
-			time.sleep(0.05)
-			cf.commander.send_hover_setpoint(-0.6, 0, 0, 0.4)
-			time.sleep(0.05)
-			cf.commander.send_hover_setpoint(0, -0.6, 0, 0.4)
-			time.sleep(0.05)
+			for _ in range(10):
+				cf.commander.send_hover_setpoint(0.6, 0, 0, 0.4)
+				time.sleep(0.05)
+			for _ in range(10):
+				cf.commander.send_hover_setpoint(0, 0.6, 0, 0.3)
+				time.sleep(0.05)
+			for _ in range(10):	
+				cf.commander.send_hover_setpoint(-0.6, 0, 0, 0.2)
+				time.sleep(0.05)
+			for _ in range(10):	
+				cf.commander.send_hover_setpoint(0, -0.6, 0, 0.4)
+				time.sleep(0.05)
 
 
 	#Hover...
@@ -126,6 +131,33 @@ def fly_square(cf):
 	for y in range(10):
 		cf.commander.send_hover_setpoint(0, 0, 0, (10 - y) / 25)
 		time.sleep(0.1)
+
+def fly_hover(cf):
+
+	#Initial Statements
+	cf.param.set_value('kalman.resetEstimation', '1')
+	time.sleep(0.1)
+	cf.param.set_value('kalman.resetEstimation', '0')
+	time.sleep(2)
+
+
+	#Lift...
+	for y in range(10):
+		cf.commander.send_hover_setpoint(0, 0, 0, y / 25)
+		time.sleep(0.1)
+
+	# ... and Hover ...
+	for _ in range(50):
+		cf.commander.send_hover_setpoint(0, 0, 0, 0.4)
+		time.sleep(0.1)
+
+	#... and land
+	for y in range(10):
+		cf.commander.send_hover_setpoint(0, 0, 0, (10 - y) / 25)
+		time.sleep(0.1)	
+
+
+
 
 
 def param_stab_est_callback(name, value):
@@ -146,7 +178,10 @@ if __name__ == '__main__':
         cf.param.set_value('usd.logging', 1)
         time.sleep(5)
 
-        fly_eight(cf)
+        #fly_eight(cf)
+        fly_square(cf)
+        #fly_straight(cf)
+        #fly_hover(cf)
 
         time.sleep(5)
         cf.param.set_value('usd.logging', 0)
