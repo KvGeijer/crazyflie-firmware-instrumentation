@@ -12,6 +12,6 @@ See the [building and flashing instructions](docs/building-and-flashing/build.md
   * log_flight: Contains scripts for the used flight paths
   * cfusdlog: Decode gathered data (provided by Bitcraze)
   * decode_logs: Decodes data with help of function in cfusdlog and saves it
-  * modelling_shifts.m: MATLAB script to analyse decoded data. Data has to be formattet as a time series (not dictionary)
+  * modelling_shifts.m: MATLAB script to analyse decoded data. Data has to be formatted as a time series (not dictionary)
 
 * tools/usdlog/config.txt: File to be (manually) copied to the uSD-card for logging
