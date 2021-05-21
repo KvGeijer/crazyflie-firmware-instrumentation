@@ -7,3 +7,4 @@ on:fixedFrequency
 0     # mode (0: disabled, 1: synchronous stabilizer, 2: asynchronous)
 on:logBefore
 on:logAfter
+on:logSkipped
