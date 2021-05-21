@@ -180,15 +180,15 @@ Output: double res: Normalised Psuedo Random Number in range 0<X<1
 #define a (22695477) //Multiplier
 #define c (1) //Increment
 #define X0 (8) //Seed. Important. Only valid for X0 < m
-#define threshHold (1)
+#define threshHold (1) //Threshhold between -0.5 (100% misses) and 0.5 (0%).
 
 #if defined X0
-#define skipIter (0)
+#define skipIter (1)
 #else
 #define skipIter (0)
 #endif
 
-// Varför ha X som global? Räcker det ej att ha den i funktionen?
+
 static long X;
 
 static double lcg()
